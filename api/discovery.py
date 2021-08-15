@@ -40,10 +40,10 @@ def process(ldap, relay_ip, mac):
     """
     try:
         env = get_env(relay_ip, mac)
-    except NoRuleMatchedException:
-        return Result(Message.UNADDRESSABLE, env)
-    except FieldUndefinedException:
-        return Result(Message.CONF_ERROR, env)
+    except NoRuleMatchedException as e:
+        return Result(Message.UNADDRESSABLE, e.args[0])
+    except FieldUndefinedException as e:
+        return Result(Message.CONF_ERROR, e.args[0])
     lid = f'{env["lease_prefix"]}{env["mac"]}'
     try: # Avoid the costly critical section
         return Result(Message.OK, env, Lease.from_ldap(ldap, lid))
@@ -58,8 +58,8 @@ def process(ldap, relay_ip, mac):
                     return Result(Message.OK, env, Lease.create(ldap, **c_env))
                 except NoFreeIPException:
                     return Result(Message.NO_FREE_IP, env)
-                #except:
-                #    return Result(Message.LDAP_ERROR, ip, None)
+                except:
+                    return Result(Message.LDAP_ERROR, env)
 
 
 def log(mac, result):
@@ -71,4 +71,5 @@ def log(mac, result):
     with open(DISCOVERY_LOG_FILE, 'a') as logfile:
         logfile.write(DISCOVERY_LINE.format(int(datetime.now().timestamp() * 1000000),
                                             result.router_ip, mac, result.get_ip(),
-                                            result.message.name))
+                                            result.message.name, result.env['vid'],
+                                            result.env['zid']))

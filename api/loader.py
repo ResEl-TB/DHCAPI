@@ -78,7 +78,7 @@ def get_env(relay_ip, mac):
         if relay_ip in network:
             visit_subrules(conf, env)
             if any(k not in env for k in ['lease_duration', 'first', 'last', 'router_ip']):
-                raise FieldUndefinedException
+                raise FieldUndefinedException(env)
             filtered_env = parse({k: v for k, v in env.items() if k[:1].islower()}, env)
             first = filtered_env['first']
             last = filtered_env['last']
@@ -94,4 +94,4 @@ def get_env(relay_ip, mac):
             if isinstance(duration, str):
                 filtered_env['lease_duration'] = int(duration[:-1]) * DURATIONS[duration[-1]]
             return filtered_env
-    raise NoRuleMatchedException
+    raise NoRuleMatchedException(env)

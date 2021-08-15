@@ -33,7 +33,10 @@ def discover():
 def req():
     """This route is the endpoint to answer DHCPREQUESTs"""
     relay_ip = IP(request.form.get('relay_ip'))
-    requested_ip = IP(request.form.get('requested_ip'))
+    try:
+        requested_ip = IP(request.form.get('requested_ip'))
+    except ValueError:
+        return requesting.Result.nak()
     mac = ''.join(request.form.get('mac').split(':')).lower()
 
     if relay_ip == '0.0.0.0':

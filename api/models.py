@@ -79,12 +79,13 @@ class BaseResult:
     """
     def __init__(self, message, env, lease=None):
         self.message = message
-        self.router_ip = env['router_ip']
+        self.router_ip = env.get('router_ip', 'UNKNOWN')
         self.lease = lease
-        self.mask = env['mask']
-        self.lease_duration = env['lease_duration']
+        self.mask = env.get('mask', None)
+        self.lease_duration = env.get('lease_duration', None)
         self.dns = env.get('dns', [])
         self.attributes = env.get('attributes', {})
+        self.env = env
 
     @abstractmethod
     def _no_lease(self):
