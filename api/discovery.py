@@ -71,5 +71,5 @@ def log(mac, result):
     with open(DISCOVERY_LOG_FILE, 'a') as logfile:
         logfile.write(DISCOVERY_LINE.format(int(datetime.now().timestamp() * 1000000),
                                             result.router_ip, mac, result.get_ip(),
-                                            result.message.name, result.env['vid'],
-                                            result.env['zid']))
+                                            result.message.name, result.env.get('vid', 'UNKNOWN'),
+                                            result.env.get('zid', 'UNKNOWN')))
