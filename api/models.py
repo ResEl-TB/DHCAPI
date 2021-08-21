@@ -6,6 +6,7 @@ from abc import abstractmethod
 from datetime import datetime, timedelta
 from .constants import LEASES_DN, SERVER_IP
 from .exceptions import NoFreeIPException
+from .messages import Message
 from .ip import IP
 from .util import first_available
 
@@ -100,6 +101,9 @@ class BaseResult:
         Get the dictionary to return to FreeRADIUS as a JSON object.
         :returns: The dictionary summarizing the result
         """
+        if self.message == Message.UNADDRESSABLE:
+            return self.do_not_respond()
+
         if self.lease is None:
             return self._no_lease()
 
