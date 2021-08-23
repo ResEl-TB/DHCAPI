@@ -93,6 +93,7 @@ class BaseResult:
         self.dns = env.get('dns', [])
         self.attributes = env.get('attributes', {})
         self.env = env
+        logging.info(' -> %s', self.message.name)
 
     @abstractmethod
     def _no_lease(self):

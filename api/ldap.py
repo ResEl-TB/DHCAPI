@@ -53,7 +53,8 @@ class Ldap(RoundRobinLdap):
         :param ip_address: The machine IP address
         :param lease_expiry: The lease expiry
         """
-        logging.info(f'[LDAP][add_lease] Adding lease {lid} for machine {mac_address}/{ip_address}')
+        logging.info('[LDAP][add_lease] Adding lease %s for machine %s/%s', lid, mac_address,
+                     ip_address)
         return self.do('add', f'leaseID={lid},{LEASES_DN}', 'reselLease',
                        {'macAddress': mac_address, 'ipHostNumber': ip_address,
                         'leaseExpiry': lease_expiry})
@@ -66,4 +67,4 @@ class Ldap(RoundRobinLdap):
         results = self.get_results()
         for result in results:
             self.delete(result.entry_dn)
-        logging.info(f'[LDAP][remove_expired_leases] Removed {len(results)} leases')
+        logging.info('[LDAP][remove_expired_leases] Removed %s leases', len(results))

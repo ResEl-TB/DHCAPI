@@ -1,6 +1,7 @@
 """This module provides the requesting logic"""
 
 
+import logging
 from datetime import datetime
 from .exceptions import LeaseNotFoundException, FieldUndefinedException, NoRuleMatchedException
 from .loader import get_env
@@ -40,6 +41,7 @@ def process(ldap, relay_ip, ip, mac, hostname):
     :param mac: The client's MAC address
     :param hostname: The client's hostname
     """
+    logging.info('[REQUESTING][process] DHCPREQUEST of %s*%s on %s', ip, mac, relay_ip)
     try:
         env = get_env(relay_ip, mac)
     except NoRuleMatchedException as e:

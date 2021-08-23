@@ -1,6 +1,7 @@
 """This module provides the discovery logic"""
 
 
+import logging
 from datetime import datetime
 from multiprocessing import Lock
 from .exceptions import (LeaseNotFoundException, NoFreeIPException, FieldUndefinedException,
@@ -38,6 +39,7 @@ def process(ldap, relay_ip, mac):
     :param relay_ip: The relay's IP
     :param mac: The client's MAC address
     """
+    logging.info('[DISCOVERY][process] DHCPDISCOVER from %s on %s', mac, relay_ip)
     try:
         env = get_env(relay_ip, mac)
     except NoRuleMatchedException as e:
