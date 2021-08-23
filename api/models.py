@@ -1,5 +1,6 @@
 """This module defines the Lease model used by the API"""
 
+import logging
 import os
 import struct
 from abc import abstractmethod
@@ -73,7 +74,7 @@ class Lease:
             try:
                 self.ldap.update(f'macAddress={self.mac_address},{DEVICES_DN}', 'host', hostname)
             except:
-                pass
+                logging.warning('[REQUESTING][update] Exception ignored. See above.')
 
 
 class BaseResult:

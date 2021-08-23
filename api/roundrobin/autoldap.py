@@ -3,7 +3,8 @@
 
 import logging
 from ldap3 import Server, Connection, MODIFY_REPLACE
-from ldap3.core.exceptions import LDAPStrongerAuthRequiredResult
+from ldap3.core.exceptions import (LDAPStrongerAuthRequiredResult, LDAPNoSuchObjectResult,
+                                   LDAPInvalidAttributeSyntaxResult)
 from .exceptions import NoMoreIPException, ReadOnlyException
 from .ip import RoundRobinIP
 
@@ -73,6 +74,10 @@ class RoundRobinLdap:
                         logging.error('[RRLDAP][do] Master {} is readonly'.format(self.ip.address))
                         raise ReadOnlyException()
                     logging.error('[RRLDAP][do] Node {} is readonly'.format(self.ip.address))
+                except (LDAPNoSuchObjectResult, LDAPInvalidAttributeSyntaxResult) as e:
+                    logging.warning('[RRLDAP][do] Non-critical exception raised for {}. Reason:\n'
+                                    '             {}'.format(self.ip.address, e))
+                    raise
                 except Exception as e: # If the current node is down,
                     logging.error('[RRLDAP][do] Connection to {} failed. Reason:\n             {}'
                                   .format(self.ip.address, e))
@@ -99,20 +104,15 @@ class RoundRobinLdap:
         :param key: The key to alter
         :param value: The value to set
         """
-        try:
-            self.do('modify', dn, {key: [(MODIFY_REPLACE, [value])]})
-        except ReadOnlyException:
-            raise
+        values = [value] if value else []
+        self.do('modify', dn, {key: [(MODIFY_REPLACE, values)]})
 
     def delete(self, dn):
         """
         Remove an entry from the LDAP server.
         :param dn: The base DN
         """
-        try:
-            self.do('delete', dn)
-        except ReadOnlyException:
-            raise
+        self.do('delete', dn)
 
     def get_result(self):
         """
