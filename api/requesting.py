@@ -17,10 +17,10 @@ class Result(BaseResult):
     :param ip: The requested ip
     :param lease: The lease
     """
-    def __init__(self, message, env, lease=None):
+    def __init__(self, message, env, lease=None, hostname=''):
         super().__init__(message, env, lease)
         if lease is not None: # No real need to lock
-            lease.update(self.lease_duration)
+            lease.update(self.lease_duration, hostname)
 
     def _no_lease(self):
         """NAK"""
@@ -31,13 +31,14 @@ class Result(BaseResult):
         return self.ack()
 
 
-def process(ldap, relay_ip, ip, mac):
+def process(ldap, relay_ip, ip, mac, hostname):
     """
     Return the existing lease if it exists.
     :param ldap: The ldap to connect to
     :param relay_ip: The relay's IP address
     :param ip: The requested IP
     :param mac: The client's MAC address
+    :param hostname: The client's hostname
     """
     try:
         env = get_env(relay_ip, mac)
@@ -47,7 +48,7 @@ def process(ldap, relay_ip, ip, mac):
         return Result(Message.CONF_ERROR, e.args[0])
     lid = f'{env["lease_prefix"]}{env["mac"]}'
     try:
-        return Result(Message.OK, env, Lease.from_ldap(ldap, lid, ip))
+        return Result(Message.OK, env, Lease.from_ldap(ldap, lid, ip), hostname)
     except LeaseNotFoundException:
         return Result(Message.NO_LEASE, env)
     except:

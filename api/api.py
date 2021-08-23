@@ -38,11 +38,12 @@ def req():
     except ValueError:
         return requesting.Result.nak()
     mac = ''.join(request.form.get('mac').split(':')).lower()
+    hostname = request.form.get('hostname').strip()
 
     if relay_ip == '0.0.0.0':
         return requesting.Result.do_not_respond(), 200
 
-    result = requesting.process(ldap, relay_ip, requested_ip, mac)
+    result = requesting.process(ldap, relay_ip, requested_ip, mac, hostname)
 
     requesting.log(mac, result)
 

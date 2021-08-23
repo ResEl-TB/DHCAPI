@@ -8,6 +8,7 @@ SLAVE_LDAPS = ['10.3.3.101'] # Slaves IP list
 LDAP_USER = 'cn=admin,dc=maisel,dc=enst-bretagne,dc=fr'
 LDAP_PASSWORD = '' # LDAP password
 LEASES_DN = 'ou=leases,dc=resel,dc=enst-bretagne,dc=fr'
+DEVICES_DN = 'ou=devices,dc=resel,dc=enst-bretagne,dc=fr'
 
 
 MESSAGES = ['OK', 'No free IP', 'No lease', 'Unaddressable pool', 'Configuration error',

@@ -4,7 +4,7 @@ import os
 import struct
 from abc import abstractmethod
 from datetime import datetime, timedelta
-from .constants import LEASES_DN, SERVER_IP
+from .constants import LEASES_DN, SERVER_IP, DEVICES_DN
 from .exceptions import NoFreeIPException
 from .messages import Message
 from .ip import IP
@@ -61,14 +61,19 @@ class Lease:
                        datetime.now().astimezone() + timedelta(seconds=300))
         return cls.from_ldap(ldap, lid)
 
-    def update(self, duration):
+    def update(self, duration, hostname):
         """
         Update the lease expiry
         :param duration: The lease duration
+        :param hostname: The device hostname
         """
         if self.ldap.is_master():
             self.ldap.update(f'leaseID={self.lease_id},{LEASES_DN}', 'leaseExpiry',
                              datetime.now().astimezone() + timedelta(seconds=duration+300))
+            try:
+                self.ldap.update(f'macAddress={self.mac_address},{DEVICES_DN}', 'host', hostname)
+            except:
+                pass
 
 
 class BaseResult:
