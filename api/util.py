@@ -6,6 +6,7 @@ def first_available(l, start=0):
     :param l: The list
     :param start: The starting value
     """
+    l = [i for i in l if i >= start]
     if len(l) == 0 or l[0] != start:
         return start
     mid_i = (len(l) + 1) // 2
