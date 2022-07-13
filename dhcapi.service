@@ -1,0 +1,12 @@
+[Unit]
+Description=DHCAPI - The DHCP API
+After=network.target
+
+[Service]
+User=dhcapi
+Group=nsa
+WorkingDirectory=/srv/dhcapi
+ExecStart=/usr/local/bin/gunicorn wsgi:app --bind 0.0.0.0:4000
+
+[Install]
+WantedBy=multi-user.target

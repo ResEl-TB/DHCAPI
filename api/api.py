@@ -5,13 +5,13 @@ from flask import Flask, request, jsonify
 from . import discovery, requesting
 from .ip import IP
 from .ldap import Ldap
-from .constants import LDAP_USER, LDAP_PASSWORD, MASTER_LDAP, SLAVE_LDAPS
+from .constants import LDAP_USER, LDAP_PASSWORD, RW_SERVERS, RO_SERVERS
 
 
 app = Flask(__name__)
 logging.basicConfig(filename='/var/log/dhcapi.log', filemode='a', level=logging.DEBUG,
                     format='%(asctime)s -- %(name)s -- %(levelname)s -- %(message)s')
-ldap = Ldap(LDAP_USER, LDAP_PASSWORD, MASTER_LDAP, SLAVE_LDAPS)
+ldap = Ldap(LDAP_USER, LDAP_PASSWORD, RW_SERVERS, RO_SERVERS)
 
 
 @app.route('/discover', methods=['POST'])

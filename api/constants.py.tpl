@@ -3,8 +3,8 @@
 
 CONFIG_FILE = '/srv/dhcapi/dhcp.conf'
 
-MASTER_LDAP = '10.3.3.1' # Master IP
-SLAVE_LDAPS = ['10.3.3.101'] # Slaves IP list
+RW_SERVERS = [] # Read/Write LDAP servers
+RO_SERVERS = [] # Read-Only LDAP servers
 LDAP_USER = 'cn=admin,dc=maisel,dc=enst-bretagne,dc=fr'
 LDAP_PASSWORD = '' # LDAP password
 LEASES_DN = 'ou=leases,dc=resel,dc=enst-bretagne,dc=fr'
@@ -21,4 +21,4 @@ REQUEST_LINE = '{}// dhcp.request{{relay_ip={},mac={},ip={},status={}}} 1\n'
 REQUEST_LOG_FILE = '/tmp/request'
 
 
-SERVER_IP = '10.3.12.1'
+SERVER_IP = '' # The server IP address

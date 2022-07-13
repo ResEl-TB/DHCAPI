@@ -68,7 +68,7 @@ class Lease:
         :param duration: The lease duration
         :param hostname: The device hostname
         """
-        if self.ldap.is_master():
+        if self.ldap.can_write:
             self.ldap.update(f'leaseID={self.lease_id},{LEASES_DN}', 'leaseExpiry',
                              datetime.now().astimezone() + timedelta(seconds=duration+300))
             try:
