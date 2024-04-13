@@ -77,7 +77,7 @@ def get_env(relay_ip, mac):
         network = Network(conf['match'])
         if relay_ip in network:
             visit_subrules(conf, env)
-            if any(k not in env for k in ['lease_duration', 'first', 'last', 'router_ip']):
+            if any(k not in env for k in ['lease_duration', 'first', 'last']):
                 raise FieldUndefinedException(env)
             filtered_env = parse({k: v for k, v in env.items() if k[:1].islower()}, env)
             first = filtered_env['first']
