@@ -82,12 +82,17 @@ def get_env(relay_ip, mac):
             filtered_env = parse({k: v for k, v in env.items() if k[:1].islower()}, env)
             first = filtered_env['first']
             last = filtered_env['last']
-            router_ip = IP(filtered_env['router_ip'])
-            base = network.base_ip(router_ip)
+            relay_ip = IP(relay_ip)
+            base = network.base_ip(relay_ip)
             filtered_env['first'] = base + first if first[:1] == '+' else IP(first)
             filtered_env['last'] = base + last if last[:1] == '+' else IP(last)
             filtered_env['mask'] = filtered_env.get('mask', network.contiguous_mask)
-            filtered_env['router_ip'] = router_ip
+            if 'router_ip' in filtered_env:
+                router_ip = filtered_env['router_ip']
+                filtered_env['router_ip'] = (base + router_ip if router_ip[:1] == '+'
+                                                              else IP(router_ip))
+            else:
+                filtered_env['router_ip'] = relay_ip
             if 'lease_prefix' not in filtered_env:
                 filtered_env['lease_prefix'] = ''
             duration = filtered_env['lease_duration']
