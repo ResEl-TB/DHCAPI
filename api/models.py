@@ -71,10 +71,12 @@ class Lease:
         if self.ldap.can_write:
             self.ldap.update(f'leaseID={self.lease_id},{LEASES_DN}', 'leaseExpiry',
                              datetime.now().astimezone() + timedelta(seconds=duration+300))
-            try:
-                self.ldap.update(f'macAddress={self.mac_address},{DEVICES_DN}', 'host', hostname)
-            except:
-                logging.warning('[REQUESTING][update] Exception ignored. See above.')
+            if hostname != '':
+                try:
+                    self.ldap.update(f'macAddress={self.mac_address},{DEVICES_DN}', 'host',
+                                     hostname)
+                except:
+                    logging.warning('[REQUESTING][update] Exception ignored. See above.')
 
 
 class BaseResult:
